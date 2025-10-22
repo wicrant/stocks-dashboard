@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>📊 Stock Dashboard</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <style>
+        table {
+            width: 90%;
+            margin: 20px auto;
+            border-collapse: collapse;
+            font-family: Arial, sans-serif;
+        }
+        th, td {
+            border: 1px solid #ccc;
+            padding: 10px;
+            text-align: center;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        h1 {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h1>📊 Stock Dashboard</h1>
+    <table>
+        <tr>
+            <th>Ticker</th>
+            <th>Current Price (₹)</th>
+            <th>ATR (14-day)</th>
+            <th>Support (20-day)</th>
+            <th>Resistance (20-day)</th>
+            <th>52-Week High</th>
+            <th>52-Week Low</th>
+            <th>P/E Ratio</th>
+            <th>Volume</th>
+            <th>Market Cap</th>
+        </tr>
+        {% for stock in data %}
+        <tr>
+            <td>{{ stock.Ticker }}</td>
+            <td>{{ stock.current_price }}</td>
+            <td>{{ stock.atr }}</td>
+            <td>{{ stock.support }}</td>
+            <td>{{ stock.resistance }}</td>
+            <td>{{ stock['52_week_high'] }}</td>
+            <td>{{ stock['52_week_low'] }}</td>
+            <td>{{ stock['P/E Ratio'] }}</td>
+            <td>{{ stock.Volume }}</td>
+            <td>{{ stock['Market Cap'] }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>

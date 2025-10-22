@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>YouTube Stream Fetcher</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #f4f4f4;
+      box-sizing: border-box;
+    }
+
+    .youtube-fetcher {
+      display: flex;
+      flex-direction: row;
+      gap: 20px;
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+
+    .input-section, .preview-section {
+      flex: 1;
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      display: flex;
+      flex-direction: column;
+    }
+
+    h3 {
+      margin-top: 0;
+      color: #333;
+    }
+
+    input[type="text"] {
+      padding: 10px;
+      font-size: 1em;
+      width: 100%;
+      box-sizing: border-box;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    button {
+      margin-top: 10px;
+      padding: 10px;
+      font-size: 1em;
+      background-color: #0078D4;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #005fa3;
+    }
+
+    #status {
+      margin-top: 10px;
+      font-size: 0.9em;
+      color: #555;
+    }
+
+    video {
+      margin-top: 10px;
+      width: 100%;
+      height: auto;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    @media (max-width: 768px) {
+      .youtube-fetcher {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="youtube-fetcher">
+    <div class="input-section">
+      <h3>🎥 YouTube Streamer</h3>
+      <input type="text" id="yt-url" placeholder="Paste YouTube URL here" />
+      <button onclick="fetchStream()">Get Stream</button>
+      <div id="status"></div>
+    </div>
+
+    <div class="preview-section">
+      <h3>🔴 Live Preview</h3>
+      <video id="yt-video" controls></video>
+    </div>
+  </div>
+
+  <script>
+    async function fetchStream() {
+      const url = document.getElementById('yt-url').value.trim();
+      const status = document.getElementById('status');
+      const video = document.getElementById('yt-video');
+
+      if (!url) {
+        status.textContent = 'Please enter a YouTube URL.';
+        return;
+      }
+
+      status.textContent = 'Fetching stream...';
+
+      try {
+        const response = await fetch(`/ytstreamer?url=${encodeURIComponent(url)}`);
+        const data = await response.json();
+
+        if (data.video_url) {
+          video.src = data.video_url;
+          status.textContent = 'Stream ready!';
+        } else {
+          status.textContent = 'Failed to retrieve stream URLs.';
+        }
+      } catch (err) {
+        status.textContent = 'Error fetching stream.';
+        console.error(err);
+      }
+    }
+  </script>
+</body>
+</html>

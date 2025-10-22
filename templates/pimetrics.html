@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Pi Metrics (Plotly)</title>
+  <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+  <style>
+    body { font-family: sans-serif; margin: 0; padding: 0; }
+    .chart-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: 1fr 1fr 1fr;
+      height: 100vh;
+      width: 100vw;
+      gap: 1rem;
+      padding: 1rem;
+      box-sizing: border-box;
+    }
+    .plot-container {
+      width: 100%;
+      height: 100%;
+    }
+
+  </style>
+</head>
+<body>
+  <div class="chart-grid">
+    <div id="freqPlot" class="plot-container"></div>
+    <div id="tempPlot" class="plot-container"></div>
+    <div id="cpuUtilPlot" class="plot-container"></div>
+    <div id="memUtilPlot" class="plot-container"></div>
+    <div id="diskUtilPlot" class="plot-container"></div>
+    <div id="netUtilPlot" class="plot-container"></div>
+  </div>
+
+  <script>
+    async function updateFreqPlot() {
+      const resp = await fetch("/api/pifreq");
+      const data = await resp.json();
+
+      const trace_freq = {
+        x: data.timestamps.map(ts => new Date(ts)),
+        y: data.freqs,
+        mode: 'lines',
+        line: { color: 'green' },
+        name: 'CPU0 Freq (MHz)'
+      };
+
+      const layout = {
+        title: 'CPU Frequency (MHz)',
+        xaxis: { title: 'Time', type: 'date' },
+        yaxis: { title: 'Frequency (MHz)' },
+        margin: { t: 40, l: 50, r: 30, b: 40 },
+        showlegend: false
+      };
+
+      Plotly.react('freqPlot', [trace_freq], layout, { responsive: true });
+
+      const trace_cpu0 = {
+        x: data.timestamps.map(ts => new Date(ts)),
+        y: data.cpu0_utils,
+        mode: 'lines',
+        line: { color: 'red' }//,        name: 'CPU0 Utilization (%)'
+      };
+      const trace_cpu1 = {
+        x: data.timestamps.map(ts => new Date(ts)),
+        y: data.cpu1_utils,
+        mode: 'lines',
+        line: { color: 'blue' }//,        name: 'CPU1 Utilization (%)'
+      };
+      const trace_cpu2 = {
+        x: data.timestamps.map(ts => new Date(ts)),
+        y: data.cpu2_utils,
+        mode: 'lines',
+        line: { color: 'green' }//,        name: 'CPU2 Utilization (%)'
+      };
+      const trace_cpu3 = {
+        x: data.timestamps.map(ts => new Date(ts)),
+        y: data.cpu3_utils,
+        mode: 'lines',
+        line: { color: 'orange' }//,name: 'CPU3 Utilization (%)'
+      };
+
+      trace_cpu_util = [trace_cpu0, trace_cpu1, trace_cpu2, trace_cpu3];
+      const layout_cpu = {
+        title: 'CPU Utilization (%)',
+        xaxis: { title: 'Time', type: 'date' },
+        yaxis: { title: 'Utilization (%)' },
+        margin: { t: 40, l: 50, r: 30, b: 40 },
+        showlegend: false
+      };
+
+      Plotly.react('cpuUtilPlot', trace_cpu_util, layout_cpu, { responsive: true });
+
+      const trace_mem = {
+        x: data.timestamps.map(ts => new Date(ts)),
+        y: data.mem_utils,
+        mode: 'lines',
+        line: { color: 'pink' },
+        name: 'Memory Utilization (%)'
+      };
+
+      const layout_mem = {
+        title: 'Memory Utilization (%)',
+        xaxis: { title: 'Time', type: 'date' },
+        yaxis: { title: 'Utilization (%)' },
+        margin: { t: 40, l: 50, r: 30, b: 40 },
+        showlegend: false
+      };
+
+      Plotly.react('memUtilPlot', [trace_mem], layout_mem, { responsive: true });
+
+      const trace_disk_read = {
+        x: data.timestamps.map(ts => new Date(ts)),
+        y: data.disk_utils_read,
+        mode: 'lines',
+        line: { color: 'purple' },
+        name: 'Disk Read (B/s)'
+      };
+
+      const trace_disk_write = {
+        x: data.timestamps.map(ts => new Date(ts)),
+        y: data.disk_utils_write,
+        mode: 'lines',
+        line: { color: 'lightblue' },
+        name: 'Disk Write (B/s)'
+      };
+      trace_disk_util = [trace_disk_read, trace_disk_write];
+      const layout_disk = {
+        title: 'Disk IOPS (B/s)',
+        xaxis: { title: 'Time', type: 'date' },
+        yaxis: { title: 'IOPs (B/s)' },
+        margin: { t: 40, l: 50, r: 30, b: 40 },
+        showlegend: true,
+        legend: {
+          x: 1.0, // Center horizontally
+          y: 1.0, // Slightly above the plot
+          xanchor: 'right', // Anchor the legend horizontally at the right
+          yanchor: 'top',  // Anchor the legend vertically at the top
+          bgcolor: 'rgba(0,0,0,0)' // Transparent background
+        }
+      };
+
+      Plotly.react('diskUtilPlot', trace_disk_util, layout_disk, { responsive: true });
+
+      const trace_net_sent = {
+        x: data.timestamps.map(ts => new Date(ts)),
+        y: data.net_utils_sent,
+        mode: 'lines',
+        line: { color: 'brown' }, //        name: 'Network Sent (KB/s)'
+        name: 'Network Sent (B/s)'
+      };
+      const trace_net_recv = {
+        x: data.timestamps.map(ts => new Date(ts)),
+        y: data.net_utils_recv,
+        mode: 'lines',
+        line: { color: 'cyan' },//        name: 'Network Recv (KB/s)'
+        name: 'Network Recv (B/s)'
+      };  
+      const layout_net = {
+        title: 'Network Throughput (B/s)',
+        xaxis: { title: 'Time', type: 'date' },
+        yaxis: { title: 'Throughput (B/s)' },
+        margin: { t: 40, l: 50, r: 30, b: 40 },
+        showlegend: true,
+        legend: {
+          x: 1.0, // Center horizontally
+          y: 1.0, // Slightly above the plot
+          xanchor: 'right', // Anchor the legend horizontally at the right
+          yanchor: 'top',  // Anchor the legend vertically at the top
+          bgcolor: 'rgba(0,0,0,0)' // Transparent background
+        }
+      };  
+      Plotly.react('netUtilPlot', [trace_net_sent, trace_net_recv], layout_net, { responsive: true });
+    }
+
+    async function updateTempPlot() {
+      const resp = await fetch("/api/pitemp");
+      const data = await resp.json();
+
+      const trace = {
+        x: data.timestamps.map(ts => new Date(ts)),
+        y: data.temps,
+        mode: 'lines',
+        line: { color: 'red' },
+        name: 'Temp (°C)'
+      };
+
+      const layout = {
+        title: 'CPU Temperature (°C)',
+        xaxis: { title: 'Time', type: 'date' },
+        yaxis: { title: 'Temperature (°C)' },
+        margin: { t: 40, l: 50, r: 30, b: 40 }
+      };
+
+      //Plotly.newPlot('tempPlot', [trace], layout, { responsive: true });
+      Plotly.react('tempPlot', [trace], layout, { responsive: true });
+    }
+
+    // Initial load
+    updateFreqPlot();
+    updateTempPlot();
+
+    // Refresh every minute
+    setInterval(updateFreqPlot, 60_000);
+    setInterval(updateTempPlot, 60_000);
+  </script>
+</body>
+</html>

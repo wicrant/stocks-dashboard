@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>YouTube Downloader</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #f4f4f4;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: auto;
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+      margin-top: 0;
+      color: #333;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 10px;
+      font-size: 1em;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+
+    button {
+      margin-top: 10px;
+      padding: 10px;
+      font-size: 1em;
+      background-color: #0078D4;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #005fa3;
+    }
+
+    #status {
+      margin-top: 10px;
+      font-size: 0.9em;
+      color: #555;
+    }
+
+    .progress-container {
+      margin-top: 15px;
+      background-color: #eee;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      height: 20px;
+      width: 0%;
+      background-color: #0078D4;
+      transition: width 0.3s ease;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>📥 YouTube Video Downloader</h2>
+    <input type="text" id="yt-url" placeholder="Paste YouTube URL here" />
+    <button onclick="downloadVideo()">Download</button>
+    <div id="status"></div>
+
+    <div class="progress-container">
+      <div class="progress-bar" id="progress-bar"></div>
+    </div>
+  </div>
+
+  <script>
+    function simulateProgress() {
+      const bar = document.getElementById('progress-bar');
+      let progress = 0;
+
+      const interval = setInterval(() => {
+        if (progress >= 100) {
+          clearInterval(interval);
+          return;
+        }
+        progress += Math.random() * 10;
+        bar.style.width = Math.min(progress, 100) + '%';
+      }, 500);
+    }
+
+    async function downloadVideo() {
+      const url = document.getElementById('yt-url').value.trim();
+      const status = document.getElementById('status');
+      const bar = document.getElementById('progress-bar');
+
+      if (!url) {
+        status.textContent = 'Please enter a YouTube URL.';
+        return;
+      }
+
+      status.textContent = 'Downloading...';
+      bar.style.width = '0%';
+      simulateProgress();
+
+      try {
+        const response = await fetch(`/ytstreamer?url=${encodeURIComponent(url)}`);
+        const data = await response.json();
+
+        if (data.status === 'Download successful') {
+          status.textContent = '✅ Download complete!';
+          bar.style.width = '100%';
+        } else {
+          status.textContent = '❌ Download failed.';
+          console.error(data.details || data.error);
+        }
+      } catch (err) {
+        status.textContent = '⚠️ Error during download.';
+        console.error(err);
+      }
+    }
+  </script>
+</body>
+</html>

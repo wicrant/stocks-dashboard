@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Pi CPU Temperature</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3"></script> 
+
+<!-- Chart.js v4.4.9 -->
+ <!--
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.9/dist/chart.min.js"> --> 
+
+<!-- chartjs-adapter-date-fns v3.0.0 -->
+ <!-- 
+<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3.0.0/dist/chartjs-adapter-date-fns.bundle.min.js"></script> -->
+
+  <style>
+    body { font-family: sans-serif; padding: 1rem; }
+    canvas { max-width: 50%; max-height: 75% }
+  </style>
+</head>
+<body>
+  <h1>🌡️ Pi CPU Temp (Last 24 Hours)</h1>
+  <canvas id="tempCanvas"></canvas>
+
+  <script>
+    async function updateTempChart() {
+      const resp = await fetch("/api/pitemp");
+      const data = await resp.json();
+
+      // parse timestamps
+      const points = data.timestamps.map((ts, i) => ({
+        x: new Date(ts),
+        y: data.temps[i]
+      }));
+      const ctx = document.getElementById("tempCanvas").getContext("2d");
+
+      // destroy old chart if exists
+      if (window.tempChart) window.tempChart.destroy();
+
+    window.tempChart = new Chart(ctx, {
+        type: "line",
+        data: { datasets: [{
+          label: "Temp (°C)",
+          data: points,
+          borderColor: "red",
+          fill: false,
+          tension: 0.1,
+            pointRadius: 0,
+            pointHoverRadius: 3,
+            pointHoverBackgroundColor: "red",
+            pointHoverBorderColor: "white",
+            pointHoverBorderWidth: 2,
+            pointHitRadius: 5,
+            borderWidth: 1,
+            pointHoverBackgroundColor: "blue"
+        }]},
+        options: {
+          scales: {
+            x: {
+              type: "time",
+              time: {
+                unit: "minute",
+                displayFormats: { hour: "MMM d, HH:mm" }
+              },
+              title: { display: true, text: "Time" }
+            },
+            y: {
+              min: 25,
+              max: 85,
+              title: { display: true, text: "Temperature (°C)" }
+            }
+          },
+          plugins: {
+            decimation: {
+              enabled: true,
+              algorithm: "lttb",
+              samples: 1000
+            },
+            tooltip: { mode: "index", intersect: false }
+          }
+        }
+      });
+    }
+
+    // initial draw and periodic refresh
+    updateTempChart();
+    setInterval(updateTempChart, 60_000);
+  </script>
+</body>
+</html>
