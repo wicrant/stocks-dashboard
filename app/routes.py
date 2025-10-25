@@ -43,11 +43,15 @@ def register_routes(app):
     def pifreq_api():
         cutoff = datetime.now(timezone.utc) - timedelta(hours=24)
         conn = sqlite3.connect(DB_PATH)
-        df = pd.read_sql_query(
-            "SELECT * FROM temp_metrics WHERE timestamp >= ? ORDER BY timestamp",
-            conn, params=[cutoff.isoformat()], parse_dates=["timestamp"]
+        df = (
+          pd.read_sql_query(
+          "SELECT timestamp, freq, CPU0_utilization,CPU1_utilization, CPU2_utilization, CPU3_utilization, mem_utilization, disk_io_read, disk_io_write, net_stats_sent, net_stats_recv FROM temp_metrics "
+          "WHERE timestamp >= ? ORDER BY timestamp",
+      conn, params=[cutoff.isoformat()], parse_dates=["timestamp"]
         ).dropna()
+        )
         conn.close()
+        
         return jsonify({
             "timestamps": df["timestamp"].dt.strftime("%Y-%m-%dT%H:%M:%SZ").tolist(),
             "freqs": df["freq"].tolist(),

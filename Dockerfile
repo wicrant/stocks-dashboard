@@ -1,5 +1,7 @@
 FROM python:3.10-slim
 
+#ENV PYTHONUNBUFFERED=1
+
 WORKDIR /app
 
 # Install system dependencies
@@ -22,4 +24,5 @@ COPY . .
 EXPOSE 5000
 
 # Run the app using the new entry point
+#CMD ["python", "-u", "run.py"] # Print logs to stdout immediately
 CMD ["python", "run.py"]

@@ -9,7 +9,7 @@ VIDEO_FOLDER = "/app/videos"
 
 # Scheduler intervals (optional, for centralized tuning)
 TEMP_INTERVAL_SECONDS = 60
-METRICS_INTERVAL_SECONDS = 3
+METRICS_INTERVAL_SECONDS = 5
 PRUNE_INTERVAL_HOURS = 1
 
 TICKERS = ["INTC", "MSFT", "INFY.NS"]  # Example stock tickers

@@ -38,7 +38,7 @@ def record_temp():
             temp_c = round(float(f.read()) / 1000, 1)
     except FileNotFoundError:
         temp_c = None
-
+    #print ("RECORDING TEMP:", temp_c)
     now = datetime.now(timezone.utc).isoformat()
     conn = sqlite3.connect(DB_PATH)
     conn.execute(
@@ -100,15 +100,17 @@ def get_system_metrics():
     )
 
 def record_metrics_to_db():
-    metrics = get_system_metrics()
+    timestamp, cpufreq, cpu0_percent, cpu1_precent, cpu2_percent, cpu3_percent, memory_stats, disk_io_stats_read, disk_io_stats_write, network_stats_recv, network_stats_sent  = get_system_metrics()
+    #print("Recording metrics:", timestamp, cpufreq, cpu0_percent, cpu1_precent, cpu2_percent, cpu3_percent, memory_stats, disk_io_stats_read, disk_io_stats_write, network_stats_recv, network_stats_sent)
     conn = sqlite3.connect(DB_PATH)
-    conn.execute("""
-        INSERT INTO temp_metrics (
-            timestamp, freq, CPU0_utilization, CPU1_utilization,
-            CPU2_utilization, CPU3_utilization, mem_utilization,
-            disk_io_read, disk_io_write, net_stats_sent, net_stats_recv
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    """, metrics)
+    conn.execute(
+        "INSERT INTO temp_metrics ( \
+        timestamp, freq, CPU0_utilization, CPU1_utilization, \
+        CPU2_utilization, CPU3_utilization, mem_utilization, \
+        disk_io_read, disk_io_write, net_stats_sent, net_stats_recv \
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",  
+        (timestamp, cpufreq, cpu0_percent, cpu1_precent, cpu2_percent, cpu3_percent, memory_stats, disk_io_stats_read,disk_io_stats_write, network_stats_recv, network_stats_sent)
+    )
     conn.commit()
     conn.close()
 
