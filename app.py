@@ -81,40 +81,7 @@ def record_temp():
     )
     conn.commit()
     conn.close()
-'''
-def record_freq():
-   # Read CPU frequency (MHz)
-    try:
-        with open("/sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq") as f:
-            freq0_mhz = int(f.read() / 1000)  # Convert from kHz to MHz
-    except FileNotFoundError:
-        freq0_mhz = None
-    try:
-        with open("/sys/devices/system/cpu/cpu1/cpufreq/scaling_cur_freq") as f:
-            freq1_mhz = int(f.read() / 1000)  # Convert from kHz to MHz
-    except FileNotFoundError:
-        freq1_mhz = None
-    try:
-        with open("/sys/devices/system/cpu/cpu2/cpufreq/scaling_cur_freq") as f:
-            freq2_mhz = int(f.read() / 1000)  # Convert from kHz to MHz
-    except FileNotFoundError:
-        freq2_mhz = None
-    try:
-        with open("/sys/devices/system/cpu/cpu3/cpufreq/scaling_cur_freq") as f:
-            freq3_mhz = int(f.read() / 1000) # Convert from kHz to MHz
-    except FileNotFoundError:
-        freq3_mhz = None
-    now = datetime.now(timezone.utc).isoformat()
 
-    conn = sqlite3.connect(DB)
-    conn.execute(
-        "INSERT OR REPLACE INTO temp_metrics (timestamp, freq0, freq1, freq2, freq3) VALUES (?, ?,?,?,?)",
-        (now, freq0_mhz, freq1_mhz, freq2_mhz, freq3_mhz))
-    
-    conn.commit()
-    conn.close()
-
-'''
 
 
 def get_per_core_cpu_usage(interval=1):
@@ -294,7 +261,6 @@ def pifreq_api():
         "net_utils_sent": df["net_stats_sent"].tolist(),
         "net_utils_recv": df["net_stats_recv"].tolist()
     })
-
 
 
 @app.route("/")

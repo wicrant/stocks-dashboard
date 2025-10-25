@@ -1,0 +1,3 @@
+"MSFT",
+"INTC",
+"INFY.NS"
