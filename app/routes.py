@@ -1,4 +1,4 @@
-from flask import render_template, jsonify
+from flask import render_template, jsonify, abort   
 from datetime import datetime, timedelta, timezone
 import pandas as pd
 import sqlite3
@@ -9,7 +9,20 @@ from .ytstreamer import download_video
 def register_routes(app):
     @app.route("/")
     def index():
-        tickers = ["MSFT", "INTC", "INFY.NS"]
+        try:
+            with open('tickers.txt', 'r') as file:
+                lines = file.readlines()
+            tickers = [line.strip() for line in lines]
+        except FileNotFoundError:
+            error_message = "Error: tickers.txt file was not found."
+            return render_template("error.html", message=error_message), 404
+        except PermissionError:
+            error_message = "Error: Permission denied while trying to read the tickers.txt file."
+            return render_template("error.html", message=error_message), 403
+        except Exception as e:
+            error_message = f"An unexpected error occurred: {e}"
+            return render_template("error.html", message=error_message), 500
+
         data = fetch_stock_metrics(tickers)
         return render_template("index.html", data=data)
 
