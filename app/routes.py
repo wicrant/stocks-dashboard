@@ -9,7 +9,7 @@ from .ytstreamer import download_video
 def register_routes(app):
     @app.route("/")
     def index():
-        tickers = ["MSFT", "INTC"]
+        tickers = ["MSFT", "INTC", "INFY.NS"]
         data = fetch_stock_metrics(tickers)
         return render_template("index.html", data=data)
 
