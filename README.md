@@ -10,6 +10,11 @@ docker rm stocks-dashboard
 docker build -t stocks-dashboard .
 docker run -d --name stocks-dashboard -p 5000:5000  -v pimetrics:/app/data -v /home/pi/pishare:/app/videos stocks-dashboard
 
+docker logs --follow stocks-dashboard
+
+docker ps --format "{{ .Names }}"
+
+
 stocks-dashboard/
 ├── app/
 │   ├── __init__.py            # App factory and scheduler setup
