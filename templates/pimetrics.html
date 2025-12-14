@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Computing Platform Dashboard - Desktop</title>
+    <title>RaspberryPi Metrics</title>
     <script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -81,7 +81,7 @@
             background: var(--card-bg);
             border-radius: var(--border-radius);
             box-shadow: var(--card-shadow);
-            padding: 25px;
+            padding: 10px;
             cursor: pointer;
             transition: transform 0.3s, box-shadow 0.3s;
             height: 300px;
@@ -98,7 +98,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 10px;
         }
 
         .card-title {
@@ -250,7 +250,7 @@
 <body>
     <header class="header">
         <div class="logo">
-            <h1>Raspberry<span>Pi Metrics</span></h1>
+            <h1>RaspberryPi<span> Metrics</span></h1>
         </div>
         <!--
         <nav class="nav-links">
@@ -307,15 +307,19 @@
 
         <!-- Temperature -->
         <div class="metric-card" onclick="openModal('temp')">
-            <!--
+            
             <div class="card-header">
                 <div class="card-title">Temperature</div>
+            <!--
                 <div class="card-icon temp-icon">
                     <i class="fas fa-thermometer-half"></i>
                 </div>
+            -->
             </div>
-            --> 
+        
+            <!--  
             <div class="value-display" id="tempValue">64<span style="font-size: 16px; font-weight: 400;">°C</span></div>
+            -->
             <div class="chart-container">
                 <div id="tempPlot" class="plotly-chart"></div>
             </div>
@@ -672,7 +676,7 @@
                     hoverinfo: 'none',
                     showlegend: false
                 };
-
+ 
                 Plotly.react('cpuUtilPlot', trace_cpu_util, layout_cpu, { responsive: true, displayModeBar: false });
                 
                 // Update display value (average of all cores)
@@ -695,7 +699,7 @@
                 };
 
                 const layout_mem = {
-                    margin: { t: 0, l: 0, r: 0, b: 0 },
+                    margin: { t: 0, l: 30, r: 0, b: 30 },
                     xaxis: { showticklabels: false, showgrid: false, visible: false },
                     yaxis: { showticklabels: false, showgrid: false, visible: false },
                     hoverinfo: 'none',
@@ -728,7 +732,7 @@
                 
                 const trace_disk_util = [trace_disk_read, trace_disk_write];
                 const layout_disk = {
-                    margin: { t: 0, l: 0, r: 0, b: 0 },
+                    margin: { t: 0, l: 30, r: 0, b: 30 },
                     xaxis: { showticklabels: false, showgrid: false, visible: false },
                     yaxis: { showticklabels: false, showgrid: false, visible: false },
                     hoverinfo: 'none',
@@ -759,9 +763,9 @@
                 };  
                 
                 const layout_net = {
-                    margin: { t: 0, l: 0, r: 0, b: 0 },
-                    xaxis: { showticklabels: false, showgrid: false, visible: false },
-                    yaxis: { showticklabels: false, showgrid: false, visible: false },
+                    margin: { t: 0, l: 30, r: 0, b: 30 },
+                    xaxis: { type: 'date'},
+                    yaxis: {  },
                     hoverinfo: 'none',
                     showlegend: false
                 };  
@@ -797,12 +801,12 @@
                 //    hoverinfo: 'none',
                 //    showlegend: false
                 //};
-                      const layout = {
-        //title: 'CPU Temperature (°C)',
-        xaxis: { type: 'date' },
-        yaxis: { },
-        margin: { t: 0, l: 30, r: 0, b: 0 }
-      };
+                const layout = {
+                    //title: 'CPU Temperature (°C)',
+                    xaxis: { type: 'date' },
+                    yaxis: { },
+                    margin: { t: 0, l: 30, r: 0, b: 30 }
+                };
                 Plotly.react('tempPlot', [trace], layout, { responsive: true, displayModeBar: false });
                 
                 if (data.temps.length > 0) {
