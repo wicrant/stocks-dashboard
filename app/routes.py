@@ -5,6 +5,7 @@ import sqlite3
 from .config import DB_PATH
 from .stocks import fetch_stock_metrics
 from .ytstreamer import download_video
+from .time2sell import time2sell
 
 def register_routes(app):
     @app.route("/")
@@ -25,6 +26,23 @@ def register_routes(app):
 
         data = fetch_stock_metrics(tickers)
         return render_template("index.html", data=data)
+    
+    @app.route("/time2sell.html")
+    def t2s():
+        try:
+            df = pd.read_csv('msft.csv')
+    #    except pd.errrors.EmptyDataError:
+    #        error_message = "Error: msft.csv file was not found."
+    #        return render_template("error.html", message=error_message), 404
+    #    except pd.errors.ParserError:
+    #        error_message = "Error: Not a valid CSV format."
+    #        return render_template("error.html", message=error_message), 403
+        except Exception as e:
+            error_message = f"An unexpected error occurred: {e}"
+            return render_template("error.html", message=error_message), 500
+        
+        df = time2sell(df)
+        return render_template("time2sell.html", data=df)
 
     @app.route("/pitemp.html")
     def pitemp_page():
@@ -82,3 +100,7 @@ def register_routes(app):
     @app.route("/ytstreamer", methods=["GET"])
     def yt_download():
         return download_video()
+    
+    #@app.route("/time2sell", methods=["GET"])
+    #def time2sell():
+    #    return time2sell()

@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📊 Is it the right time to sell your stocks? </title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com">
+    <link href="https://fonts.googleapis.com" rel="stylesheet">
+    <style>
+        :root {
+            --bg-body: #f8fafc; /* Very light gray/white */
+            --bg-card: #ffffff;
+            --primary: #4f46e5; /* Soft Indigo */
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --header-bg: #f1f5f9;
+        }
+
+        * {
+            margin: 0; padding: 0; box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            min-height: 100vh;
+            padding: 20px;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 32px;
+            padding-top: 20px;
+        }
+
+        .header h1 {
+            font-size: clamp(1.5rem, 5vw, 2.25rem);
+            font-weight: 800;
+            color: var(--text-main);
+            letter-spacing: -0.025em;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+
+        /* Modern Table Card */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .table-container {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        th {
+            background-color: var(--header-bg);
+            padding: 16px 24px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            border-bottom: 1px solid var(--border);
+        }
+
+        td {
+            padding: 16px 24px;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.95rem;
+            color: var(--text-main);
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover {
+            background-color: #f8fafc;
+        }
+
+        /* Mobile Optimization */
+        @media (max-width: 768px) {
+            body { padding: 12px; }
+            
+            .card { background: transparent; border: none; box-shadow: none; }
+
+            table, thead, tbody, th, td, tr { display: block; }
+
+            thead tr { position: absolute; top: -9999px; left: -9999px; }
+
+            tr {
+                background: var(--bg-card);
+                border: 1px solid var(--border);
+                border-radius: 12px;
+                margin-bottom: 12px;
+                padding: 8px 0;
+                box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            }
+
+            td {
+                border: none;
+                position: relative;
+                padding-left: 45%;
+                text-align: right;
+                padding-top: 10px;
+                padding-bottom: 10px;
+                border-bottom: 1px solid #f1f5f9;
+            }
+
+            td:last-child { border-bottom: none; }
+
+            td::before {
+                content: attr(data-label);
+                position: absolute;
+                left: 20px;
+                font-weight: 600;
+                color: var(--text-muted);
+                font-size: 0.75rem;
+                text-transform: uppercase;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📊 Time to Sell</h1>
+            <p>Determine if it is time to sell stocks</p>
+        </div>
+       
+        <div class="card">
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            {% for column in data.columns %}
+                            <th>{{ column }}</th>
+                            {% endfor %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for index, row in data.iterrows() %}
+                        <tr>
+                            {% for column, value in row.items() %}
+                            <td data-label="{{ column }}">{{ value }}</td>
+                            {% endfor %}
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
