@@ -30,7 +30,7 @@ def register_routes(app):
     @app.route("/time2sell.html")
     def t2s():
         try:
-            df = pd.read_csv('msft.csv')
+            df = pd.read_csv('INTC.csv')
     #    except pd.errrors.EmptyDataError:
     #        error_message = "Error: msft.csv file was not found."
     #        return render_template("error.html", message=error_message), 404
