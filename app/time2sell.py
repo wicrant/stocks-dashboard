@@ -15,7 +15,7 @@ def time2sell(df):
                               end=end_date.strftime('%Y-%m-%d'))
 
     # Get the latest closing price and the date of the last recorded closing price    
-    latest_close = 134 #history['Close'].iloc[-1]
+    latest_close = history['Close'].iloc[-1]
     latest_date = history.index[-1].normalize().tz_localize(None)
 
     # Get the most recent working day of the stock market and the closing price on that day
