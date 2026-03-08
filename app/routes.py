@@ -31,18 +31,12 @@ def register_routes(app):
     def t2s():
         try:
             df = pd.read_csv('INTC.csv')
-    #    except pd.errrors.EmptyDataError:
-    #        error_message = "Error: msft.csv file was not found."
-    #        return render_template("error.html", message=error_message), 404
-    #    except pd.errors.ParserError:
-    #        error_message = "Error: Not a valid CSV format."
-    #        return render_template("error.html", message=error_message), 403
         except Exception as e:
             error_message = f"An unexpected error occurred: {e}"
             return render_template("error.html", message=error_message), 500
         
         df = time2sell(df)
-        return render_template("time2sell.html", data=df)
+        return render_template("time2sell.html", data=df, StockName='Intel', LatestPrice=df['Current Price'].at[1], CurrentDate = df['Current Date'].at[1])
 
     @app.route("/pitemp.html")
     def pitemp_page():
