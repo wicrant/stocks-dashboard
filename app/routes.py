@@ -35,8 +35,16 @@ def register_routes(app):
             error_message = f"An unexpected error occurred: {e}"
             return render_template("error.html", message=error_message), 500
         
-        df = time2sell(df)
-        return render_template("time2sell.html", data=df, StockName='Intel', LatestPrice=df['Current Price'].at[1], CurrentDate = df['Current Date'].at[1])
+        df,LatestUsdInr, TotalVestValue, TotalCurrentValue = time2sell(df)
+        return render_template(
+            "time2sell.html", 
+            data=df, StockName='Intel', 
+            LatestPrice=df['Current Price'].at[1], 
+            CurrentDate = df['Current Date'].at[1],
+            TotalVestValue = TotalVestValue,
+            TotalCurrentValue = TotalCurrentValue,
+            LatestUsdInr = LatestUsdInr
+            )
 
     @app.route("/pitemp.html")
     def pitemp_page():

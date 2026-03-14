@@ -155,6 +155,7 @@
                 Stock: <span style="color: blue">{{ StockName }}</span>
                 &emsp;&emsp;&emsp;
                 Latest Price: <span style="color: blue">{{ LatestPrice }}</span>
+                USDINR: <span style="color: blue">{{ LatestUsdInr }}</span>
                 on <span style="color: blue">{{ CurrentDate }} </span>
             </h4>
         </div>
@@ -181,5 +182,13 @@
             </div>
         </div>
     </div>
+    <div class="container">
+        <h4 style="text-align: center;">
+            Total Value at Vesting Price: <span style="color: blue">{{ "{:,}".format(TotalVestValue) }}</span>
+            &emsp;&emsp;&emsp;
+            Total Current Value: <span style="color: blue">{{ "{:,}".format(TotalCurrentValue) }}</span>
+            on <span style="color: blue">{{ CurrentDate }} </span>
+        </h4>
+    </div> 
 </body>
 </html>
