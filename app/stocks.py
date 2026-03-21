@@ -15,9 +15,14 @@ def fetch_stock_metrics(tickers):
         info = yf.Ticker(ticker).info
         var_52WH =  percentchange((df["Close"].iloc[-1]), info.get("fiftyTwoWeekHigh", 0))
         var_52WL = percentchange ((df["Close"].iloc[-1]), info.get("fiftyTwoWeekLow", 0))
+        current_price = round(df["Close"].iloc[-1], 2)
+        prev_close = round (info.get('previousClose'), 2)
+        day_change = round ((current_price - prev_close)*100 / prev_close, 2)
         data.append({
             "Ticker": ticker,
-            "current_price": round(df["Close"].iloc[-1], 2),
+            "current_price": current_price,
+            "prev_close": prev_close,
+            "day_change": day_change, 
             "P/E Ratio": round(info.get("trailingPE", 0), 2),
             "P/B Ratio": round(info.get("priceToBook", 0), 2),
             "Beta": round(info.get("beta", 0), 2),

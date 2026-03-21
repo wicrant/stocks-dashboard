@@ -154,8 +154,8 @@
             <h4 style="text-align: center;">
                 Stock: <span style="color: blue">{{ StockName }}</span>
                 &emsp;&emsp;&emsp;
-                Latest Price: <span style="color: blue">{{ LatestPrice }}</span>
-                USDINR: <span style="color: blue">{{ LatestUsdInr }}</span>
+                Latest Price: <span style="color: blue">{{ "{:,.2f}".format(LatestPrice) }}</span>
+                USDINR: <span style="color: blue">{{ "{:,.2f}".format(LatestUsdInr) }}</span>
                 on <span style="color: blue">{{ CurrentDate }} </span>
             </h4>
         </div>
@@ -173,7 +173,19 @@
                         {% for index, row in data.iterrows() %}
                         <tr>
                             {% for column, value in row.items() %}
-                            <td data-label="{{ column }}">{{ value }}</td>
+                            <td data-label="{{ column }}"
+                                {% if column in ['Grant Returns', 'Vest Returns'] and value is number and value < 0 %} 
+                                    style="color: red;"      
+                                {% elif column in ['Grant Returns', 'Vest Returns'] and value is number and value >= 15 %} 
+                                    style="color: #16a34a;"                                                                                                
+                                {% endif %} >
+
+                                {% if value is number %}
+                                     {{ "{:,.2f}".format(value) }}
+                                {% else %}
+                                    {{ value }}
+                                {% endif %}
+                            </td>
                             {% endfor %}
                         </tr>
                         {% endfor %}
@@ -182,8 +194,11 @@
             </div>
         </div>
     </div>
+    <br> <br>
     <div class="container">
         <h4 style="text-align: center;">
+            Total Value at Grant Price: <span style="color: blue">{{ "{:,}".format(TotalGrantValue) }}</span>
+            &emsp;&emsp;&emsp;
             Total Value at Vesting Price: <span style="color: blue">{{ "{:,}".format(TotalVestValue) }}</span>
             &emsp;&emsp;&emsp;
             Total Current Value: <span style="color: blue">{{ "{:,}".format(TotalCurrentValue) }}</span>
